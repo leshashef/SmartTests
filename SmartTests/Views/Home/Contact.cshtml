@@ -1,0 +1,109 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+    <h1>Hello world</h1>
+
+    <form action="/Home/Contact" method="post">
+        <input id="time" type="hidden" name="x" value="2021-05-05" />
+        <input id="send" type="button" name="name" value="Отправить" />
+    </form>
+
+
+    <script>
+        var submit = document.getElementById('send');
+        submit.addEventListener('click', function () {
+            var url = 'https://localhost:44378/Home/Contact'; // url любой
+            var xhr = new XMLHttpRequest();
+          
+            xhr.onreadystatechange = function () {//Call a function when the state changes.
+               // console.log(xhr.readyState + " " + xhr.status);
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText);
+                }
+                else if (xhr.readyState == 4 && xhr.status == 0) {
+                    console.log('нет интернета');
+                    let info = {
+                        url: url,
+                        method: 'POST',
+                        body: body,
+                    };
+                    let jdonInfo = JSON.stringify(info);
+                    localStorage.setItem('InternetFailed: ' + Math.random() * 10000, jdonInfo);
+                }
+            }
+            var body = 'index=' + encodeURIComponent(document.getElementById('time').value);
+            console.log('push');
+            xhr.open('POST', url, true); // sync
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            try {
+                xhr.send(body);  //  Когда нет интернета - происходит "NetworkError" и срабатывает catch{}
+            } catch (err) {
+                console.log('err ' + err);
+                return false;
+            }
+
+        });
+        console.log(submit);
+    </script>
+    <script>
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        var isOnline;
+        function updateOnlineStatus(event) {
+            isOnline = navigator.onLine ? true : false;
+        }
+
+        let timerId = setInterval(tryFetch, 2000);
+        function tryFetch() {
+            if (isOnline) {
+
+
+                var arrayOfKeys = Object.keys(localStorage);
+                //console.log(arrayOfKeys);
+                for (let value of arrayOfKeys) {
+                    if (value.toString().includes('InternetFailed:')) {
+                        console.log('наша строка');
+                        let responce = JSON.parse(localStorage.getItem(value));
+
+                        var xhrRepeat = new XMLHttpRequest();
+
+                        xhrRepeat.onreadystatechange = function () {//Call a function when the state changes.
+                            // console.log(xhr.readyState + " " + xhr.status);
+                            if (xhrRepeat.readyState == 4 && xhrRepeat.status == 200) {
+                                console.log(xhrRepeat.responseText);
+                                localStorage.removeItem(value);
+                            }
+                            else if (xhrRepeat.readyState == 4 && xhrRepeat.status == 0) {
+                                console.log('нет интернета');
+
+                            }
+                        }
+
+                        console.log('push');
+                        xhrRepeat.open(responce.method, responce.url, true); // sync
+                        if (responce.method == 'POST') {
+                            xhrRepeat.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        }
+
+                        try {
+                            if (responce.bode !== null) {
+                                xhrRepeat.send(responce.body);  //  Когда нет интернета - происходит "NetworkError" и срабатывает catch{}
+                            }
+                            else {
+                                xhrRepeat.send();
+                            }
+                        } catch (err) {
+                            console.log('err ' + err);
+                            return false;
+                        }
+
+                    }
+                    else {
+                        continue;
+                    }
+                }
+            }
+        }
+    </script>
