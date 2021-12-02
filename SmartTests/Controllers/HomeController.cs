@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SmartTests.Models;
+using SmartTests.Models.Context;
 
 namespace SmartTests.Controllers
 {
@@ -13,13 +14,17 @@ namespace SmartTests.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private AppDbContext dbContext;
+   
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            dbContext = context;
         }
 
         public IActionResult Index()
         {
+            dbContext.Users.Add(new UserModel { Login = "leshashef", Name = "leshashef" });
             return View();
         }
 
