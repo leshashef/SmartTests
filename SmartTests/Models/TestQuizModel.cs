@@ -16,11 +16,21 @@ namespace SmartTests.Models
         public string NameQuiz { get; set; }
 
         public int UserModelId { get; set; }
-        public virtual UserModel UserModel { get; set; }
+        public virtual UserModel User { get; set; }
 
         public virtual List<QuestionModel> Questions { get; set; }
 
         public int LikeThisQuiz { get; set; }
-        
+
+        public bool IsPrivateTest { get; set; }
+        public string InviteCode { get; set; }
+
+        public int PassThisTest { get; set; }
+
+        public string TextAfterPass { get; set; }
+
+        public byte Difficulty { get; set; }
+
+        public byte ThemeTest { get; set; }
     }
 }

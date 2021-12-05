@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartTests.Models.Notification;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,10 @@ namespace SmartTests.Models
 {
     public class UserModel
     {
+        public UserModel()
+        {
+            NotificationDatas = new List<NotificationDataModel>();
+        }
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -24,5 +29,6 @@ namespace SmartTests.Models
 
         public string ProfilePhoto { get; set; }
 
+        public virtual List<NotificationDataModel> NotificationDatas { get; set; } 
     }
 }
