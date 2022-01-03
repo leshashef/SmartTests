@@ -10,6 +10,8 @@ namespace SmartTests.Models
         public TestQuizModel()
         {
             Questions = new List<QuestionModel>();
+            UsersPassTest = new List<PassTestModel>();
+            FavoritFromUser = new List<UserFavoritTestModel>();
         }
         public int Id { get; set; }
 
@@ -32,5 +34,8 @@ namespace SmartTests.Models
         public byte Difficulty { get; set; }
 
         public byte ThemeTest { get; set; }
+
+        public virtual List<PassTestModel> UsersPassTest { get; set; }
+        public virtual List<UserFavoritTestModel> FavoritFromUser { get; set; }
     }
 }

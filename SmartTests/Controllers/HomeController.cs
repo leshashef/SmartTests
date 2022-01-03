@@ -6,11 +6,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using CorePush.Google;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartTests.Models;
 using SmartTests.Models.Context;
+using SmartTests.Models.Notification;
 using WebPush;
 
 namespace SmartTests.Controllers
@@ -48,7 +49,24 @@ namespace SmartTests.Controllers
                 return BadRequest("Client Name already used.");
             }
             var subscription = new PushSubscription(endpoint, p256dh, auth);
-            dbContext.Users.Add(new UserModel { Login = client, Name = subscription.P256DH, Phone = subscription.Auth, Password = subscription.Endpoint });
+            UserModel newUser = new UserModel
+            {
+                Login = client,
+            };
+           dbContext.Users.Add(newUser);
+            //    new UserModel {
+            //    Login = client, 
+            //    //Name = subscription.P256DH,
+            //    //Phone = subscription.Auth,
+            //    //Password = subscription.Endpoint
+            //});
+            dbContext.NotificationData.Add(new NotificationDataModel
+            {
+                User = newUser,
+                P256DH = subscription.P256DH,
+                Auth = subscription.Auth,
+                Endpoint = subscription.Endpoint,
+            });
             dbContext.SaveChanges();
             return View("Notify", dbContext.Users.Select(x=>x.Login).ToList());
         }
@@ -87,7 +105,7 @@ namespace SmartTests.Controllers
             {
                 return BadRequest("No Client Name parsed.");
             }
-            UserModel user = dbContext.Users.FirstOrDefault(x => x.Login == client);
+            UserModel user = dbContext.Users.Include(x=>x.NotificationDatas).FirstOrDefault(x => x.Login == client);
           //  PushSubscription subscription = PersistentStorage.GetSubscription(client);
             if (user == null)
             {
@@ -97,7 +115,7 @@ namespace SmartTests.Controllers
             var subject = configuration["VAPID:subject"];
             var publicKey = configuration["VAPID:publicKey"];
             var privateKey = configuration["VAPID:privateKey"];
-            PushSubscription subscription = new PushSubscription { Auth = user.Phone, P256DH = user.Name, Endpoint = user.Password };
+            PushSubscription subscription = new PushSubscription { Auth = user.NotificationDatas[0].Auth, P256DH = user.NotificationDatas[0].P256DH, Endpoint = user.NotificationDatas[0].Endpoint };
             var vapidDetails = new VapidDetails(subject, publicKey, privateKey);
 
             var webPushClient = new WebPushClient();

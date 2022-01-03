@@ -1,0 +1,24 @@
+﻿
+@model FastRegisterModel
+@{
+}
+<link href="~/css/FastReg.css" rel="stylesheet" />
+
+<div class="container-fast-reg">
+    <form asp-action="FastRegister" asp-controller="Partial" asp-anti-forgery="true">
+        <div class="validation" asp-validation-summary="ModelOnly"></div>
+        <div>
+            <div>
+                <label asp-for="Name">Введите имя</label><br />
+                <input type="text" asp-for="Name" />
+                <span asp-validation-for="Name" />
+            </div>
+            <div>
+                <input type="submit" value="Продолжить" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+

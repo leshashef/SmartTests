@@ -11,6 +11,9 @@ namespace SmartTests.Models
         public UserModel()
         {
             NotificationDatas = new List<NotificationDataModel>();
+            UserPassTest = new List<PassTestModel>();
+            UserTests = new List<TestQuizModel>();
+            FavoritTest = new List<UserFavoritTestModel>();
         }
         public int Id { get; set; }
 
@@ -29,6 +32,12 @@ namespace SmartTests.Models
 
         public string ProfilePhoto { get; set; }
 
+        public int RoleModelId { get; set; }
+        public virtual RoleModel Role { get; set; }
+
+        public virtual List<TestQuizModel> UserTests { get; set; }
         public virtual List<NotificationDataModel> NotificationDatas { get; set; } 
+        public virtual List<PassTestModel> UserPassTest { get; set; }
+        public virtual List<UserFavoritTestModel> FavoritTest { get; set; }
     }
 }
