@@ -1,0 +1,82 @@
+﻿@using SmartTests.Models.ModelFastDevFroKyrsach
+@model Quiz
+@{
+}
+<form id="form" method="post">
+    <h2>Тест: @Model.NameQuiz</h2>
+    <input id="NameQuiz" type="hidden" name="NameQuiz" value="@Model.Id" />
+
+    @foreach (Question question in Model.Questions)
+    {
+     <div>
+        <h4>@question.NameQuestion</h4>
+        <input type="hidden" name="NameQuestion" value="@question.Id" />
+        @foreach (Answers answers in question.Answers)
+        {
+            <input type="hidden" name="NameAnswer" value="@answers.LocalId" data-local-name="@answers.Value"/>
+            <label>@answers.Value</label><input type="checkbox" name="NameTrueAnswer" data-local-id="@answers.LocalId" />
+            <hr /><br />
+        }
+     </div>
+    }
+
+    
+</form>
+<button id="EndQuiz">Завершить тест</button>
+<script>
+    var btnEnd = document.getElementById('EndQuiz');
+    btnEnd.addEventListener('click', function () {
+        
+        let form = document.getElementById('form');
+        let divs = form.getElementsByTagName('div');
+
+        let passTest = {
+            NameQuiz: null,
+            Question: []
+        };
+        passTest.NameQuiz = document.getElementById('NameQuiz').value;
+        passTest.Question = Array(divs.length);
+        count = 0;
+        for (elem of divs) {
+            let inp = elem.getElementsByTagName('input');
+            passTest.Question[count] = {};
+            passTest.Question[count].QuestionName = '';
+            passTest.Question[count].Answer = [];
+            passTest.Question[count].TrueAnswer = [];
+            for (el of inp) {
+                if (el.name == 'NameQuestion') {
+                    passTest.Question[count].QuestionName = el.value;
+                }
+                if (el.name == 'NameAnswer') {
+                    passTest.Question[count].Answer.push({ id: el.value, value: el.getAttribute('data-local-name') });
+                }
+                if (el.name == 'NameTrueAnswer') {
+                    passTest.Question[count].TrueAnswer.push({ id: el.getAttribute('data-local-id'), value: el.checked });
+                }
+            }
+
+            count++;
+        }
+
+        let json = JSON.stringify(passTest);
+        console.log(json);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Quiz/QuizPlay',
+            data: JSON.stringify(passTest),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            async: false,
+            success: function (data, textStatus) {
+                console.log(data);
+                
+                    // data.redirect contains the string URL to redirect to
+                window.location.href = '/Quiz/QuizResult?id=' + data.id;
+                
+            }
+        })
+        console.log('Итог');
+    });
+
+</script>

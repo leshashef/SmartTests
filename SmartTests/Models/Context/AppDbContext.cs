@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SmartTests.Models.ModelFastDevFroKyrsach;
 using SmartTests.Models.Notification;
 
 namespace SmartTests.Models.Context
@@ -17,6 +18,15 @@ namespace SmartTests.Models.Context
         public DbSet<NotificationDataModel> NotificationData { get; set; }
         public DbSet<PassTestModel> PassTest { get; set; }
         public DbSet<UserFavoritTestModel> UserFavoritTest { get; set; }
+
+
+        //таблицы для курсовой
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Answers> Answers { get; set; }
+        public DbSet<Question> QuestionsK { get; set; }
+        public DbSet<TrueAnswers> TrueAnswers { get; set; }
+        public DbSet<PassQuiz> PassQuizzes { get; set; }
+        ////////////////////////////////////////////////////////
 
 
         public AppDbContext(DbContextOptions<AppDbContext> options)

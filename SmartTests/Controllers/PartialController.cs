@@ -47,7 +47,7 @@ namespace SmartTests.Controllers
                 await Authenticate(user);
 
             }
-            return Ok();
+            return Redirect("~/Home");
         }
 
         private async Task Authenticate(UserModel user)

@@ -1,0 +1,39 @@
+﻿@using SmartTests.TestJsonModel
+@model ResultQuizJson
+
+
+<div class="result-game">
+    <h2>Вы прошли тест!!!</h2>
+    <h3>Итог: @Model.Right баллов из @Model.All возможных</h3>
+</div>
+<hr />
+<br />
+
+@foreach (var qeust in Model.Questions)
+{
+    <h4>Вопрос: @qeust.QuestionName</h4>
+
+    @foreach (var answer in qeust.AnswerResult)
+    {
+        @if (answer.TrueAnswer == true)
+        {
+            <h5>Правильный ответ: @answer.NameAnswer</h5>
+            @if (answer.SendAnswer == true)
+            {
+                <p>Вы выбрали правильный ответ</p>
+            }
+        }
+        else
+        {
+            <h5>Неправильный ответ: @answer.NameAnswer</h5>
+            @if (answer.SendAnswer == true)
+            {
+                <p>Вы выбрали неправильный ответ</p>
+            }
+        }
+    }
+    <hr />
+    <br />
+}
+
+<a asp-controller="Home" asp-action="Index">Вернуться на гравную.</a>

@@ -1,0 +1,166 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>Create</h1>
+
+<form id="form" method="post">
+    <label>Название теста:</label><br />
+    <input id="NameQuiz" type="text" name="NameQuiz" /><br /><br />
+    <div>
+        <label>Вопрос:</label><br />
+        <input type="text" name="Question" /><br />
+        <label>Ответы:</label><br />
+        <input id="0" type="text" name="Answers" />
+        <label>Правильный</label>
+        <input id="0" type="checkbox" name="TrueAnswer"  /><br />
+
+        <input id="Add" type="button" name="AddAnswer" value="Добавить ответ" />
+    </div>
+    
+    <br /><br />
+    <input id="AddQuestion" type="button" value="Добавить вопрос" /><br /><br />
+
+    <input id="CreateTest" type="button" name="Create" value="Создать тест" />
+</form>
+
+<script>
+    console.log('start');
+    var countAnswer = 0;
+    var add = document.getElementById('AddQuestion');
+    var labelAddQuest = document.createElement('label');
+    labelAddQuest.innerText = "Вопрос:";
+    var inpAddQuest = document.createElement('input');
+    inpAddQuest.type = 'text';
+    inpAddQuest.name = 'Question';
+    var labelTrueAnswer = document.createElement('label');
+    labelTrueAnswer.innerText = "Правильный";
+    var inpAnswer = document.createElement('input');
+    inpAnswer.type = 'text';
+    inpAnswer.name = 'Answers';
+    var inpCheckAnswer = document.createElement('input');
+    inpCheckAnswer.type = 'checkbox';
+    inpCheckAnswer.name = 'TrueAnswer';
+    add.addEventListener('click', function () {
+        console.log('event');
+        let cloneL = labelAddQuest.cloneNode(true);
+        let cloneI = inpAddQuest.cloneNode(true);
+        let AnswerLabel = document.createElement('label');
+        AnswerLabel.innerText = 'Ответы:'
+        let cloneInpA = inpAnswer.cloneNode(true);
+        let cloneCheckA = inpCheckAnswer.cloneNode(true);
+        let cloneLabelA = labelTrueAnswer.cloneNode(true);
+        countAnswer++;
+        cloneInpA.id = countAnswer;
+        cloneCheckA.id = countAnswer;
+        let addAnswerClone = document.createElement('input');
+        addAnswerClone.type = 'button';
+        addAnswerClone.name = 'AddAnswer';
+        addAnswerClone.value = 'Добавить ответ';
+        addAnswerClone.addEventListener('click', function () {
+            let cloneL = labelTrueAnswer.cloneNode(true);
+            let cloneI = inpAnswer.cloneNode(true);
+            let cloneC = inpCheckAnswer.cloneNode(true);
+            countAnswer++;
+            cloneI.id = countAnswer;
+            cloneC.id = countAnswer;
+            addAnswerClone.before(cloneI);
+            addAnswerClone.before(cloneL);
+            addAnswerClone.before(cloneC);
+            AddBRAfter(cloneC);
+        })
+
+        let div = document.createElement('div');
+        add.before(div);
+
+        div.append(cloneL);
+        div.append(cloneI);
+        AddBR(cloneI);
+        cloneI.after(AnswerLabel);
+        AddBR(AnswerLabel);
+        AnswerLabel.after(addAnswerClone);
+        AnswerLabel.after(cloneCheckA);
+        AnswerLabel.after(cloneLabelA);
+        AnswerLabel.after(cloneInpA);
+        AddBRAfter(AnswerLabel);
+        AddBRAfter(cloneCheckA);
+        AddBR(add);
+        AddBR(add);
+
+
+        console.log('eventEnd');
+    })
+    function AddBR(elem) {
+        let br = document.createElement('br');
+        elem.before(br);
+    }
+    function AddBRAfter(elem) {
+        let br = document.createElement('br');
+        elem.after(br);
+    }
+
+    var addAnswer = document.getElementById('Add');
+    addAnswer.addEventListener('click', function () {
+        let cloneL = labelTrueAnswer.cloneNode(true);
+        let cloneI = inpAnswer.cloneNode(true);
+        let cloneC = inpCheckAnswer.cloneNode(true);
+        countAnswer++;
+        cloneI.id = countAnswer;
+        cloneC.id = countAnswer;
+        addAnswer.before(cloneI);
+        addAnswer.before(cloneL);
+        addAnswer.before(cloneC);
+        AddBRAfter(cloneC);
+    })
+</script>
+
+<script>
+    var CreateTest = document.getElementById('CreateTest');
+
+    CreateTest.addEventListener('click', async function () {
+        let test = {};
+        let form = document.getElementById('form');
+        let name = document.getElementById('NameQuiz');
+        let divs = form.getElementsByTagName('div');
+        
+        test.NameQuiz = name.value;
+        test.Question = Array(divs.length);
+        count = 0;
+        for (elem of divs) {
+            let inp = elem.getElementsByTagName('input');
+            test.Question[count] = {};
+            test.Question[count].QuestionName = '';
+            test.Question[count].Answer = [];
+            test.Question[count].TrueAnswer = [];
+            for (el of inp) {
+                if (el.name == 'Question') {
+                    test.Question[count].QuestionName = el.value;
+                }
+                if (el.name == 'Answers') {
+                    test.Question[count].Answer.push({ id: el.id, value: el.value });
+                }
+                if (el.name == 'TrueAnswer') {
+                    test.Question[count].TrueAnswer.push({ id: el.id, value: el.checked });
+                }
+            }
+      
+            count++;
+        }
+        let json = JSON.stringify(test);
+        console.log(json);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Quiz/Create',
+            data: JSON.stringify(test),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            async: false,
+            success: function (result) {
+                console.log('Data received: ');
+                console.log(result);
+            }
+        });
+    })
+</script>

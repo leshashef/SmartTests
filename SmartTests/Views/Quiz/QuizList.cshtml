@@ -1,0 +1,12 @@
+﻿@using SmartTests.Models.ModelFastDevFroKyrsach
+@model List<Quiz>
+@{
+}
+<h1>List</h1>
+
+@foreach (Quiz quiz in Model)
+{
+<h3>@quiz.NameQuiz</h3>
+<a asp-controller="Quiz" asp-action="QuizPlay" asp-route-id="@quiz.Id" >Пройти тест</a>
+<hr />
+}
