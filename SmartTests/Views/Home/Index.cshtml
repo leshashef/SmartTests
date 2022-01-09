@@ -1,7 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-  @*@await Component.InvokeAsync("FirstOpen")*@
+@{
+    var cook = Context.Request.Cookies.FirstOrDefault(x => x.Key == "welcome");
+}
+@if (cook.Value == null)
+{
+    @await Component.InvokeAsync("FirstOpen")
+}
+
 <div class="text-center">
     <h1 class="display-4">Добро пожаловать.</h1>
     <p>Это приложение умные тесты!</p>

@@ -4,6 +4,53 @@
 @{
 }
 
-    <div class="first-open">
-        Здравствуйте, это приложение умные тесты
+<div id="BannerWelcome" class="first-open">
+    <h3>Здравствуйте, это приложение умные тесты</h3>
+    <h5>Вы можете:</h5>
+    <p>Создавать собственные тесты</p>
+    <p>Выбирать разные категории для тестов</p>
+    <p>Создавать разные виды вопросов</p>
+    <p>Включать стили для каждого вашего теста</p>
+    <p>Создавать тесты офлаин</p>
+    <p>Перепроходить тесты добавенные в избранные офлаин</p>
+    <p>Делиться своими тестами в друзьями</p>
+    <p>Получать уведомления прямо на телефон</p>
+    <p>Так же вы можете создать отдельное приложения как на телефоне так и на любом другом устройстве</p>
+    <hr />
+    <h5>Создай свой аккаунт и начни уже прямо сейчас!!!</h5>
+    <div>
+        <a id="BannerReg" asp-controller="Account" asp-action="Register">Зарегистрироваться</a><span>|</span>
+        <a id="BannerLogin" asp-controller="Account" asp-action="Login">Войти</a>
     </div>
+
+    <div >
+        <button id="ExitButtonBanner" class="exit-button-banner">Закрыть окно.</button>
+    </div>
+    
+</div>
+
+<script>
+    var btn = document.getElementById('ExitButtonBanner');
+    var bw = document.getElementById('BannerWelcome');
+    var btnLog = document.getElementById('BannerLogin');
+    var btnReg = document.getElementById('BannerReg');
+    btn.addEventListener('click', function () {
+        bw.remove();
+        document.cookie = 'welcome=close';
+    })
+    btnReg.addEventListener('click', function () {
+        bw.remove();
+        document.cookie = 'welcome=close';
+    })
+    btnLog.addEventListener('click', function () {
+        bw.remove();
+        document.cookie = 'welcome=close';
+    })
+    //тупой js
+    window.onload = function () {
+        var bb = document.cookie.match(/date=(.+?)(;|$)/)
+        if (bb[1] != undefined && bb[1] != null && bb[1] != '') {
+            bw.remove();
+        }
+    }
+</script>
